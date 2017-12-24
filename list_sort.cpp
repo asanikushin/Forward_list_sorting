@@ -20,13 +20,12 @@ struct Node {
 };
 
 Node *merge(Node *first, Node *second) {
-    //std::cerr << "start merge\n";
     if (first == nullptr)
         return second;
     if (second == nullptr)
         return first;
     Node *ans;
-    if ((*first) < (*second)) {
+    if (*first < *second) {
         ans = first;
         first = first->next;
     } else {
@@ -34,10 +33,8 @@ Node *merge(Node *first, Node *second) {
         second = second->next;
     }
     Node *start = ans;
-    //std::cerr << "before while\n";
     while (first != nullptr && second != nullptr) {
-        //std::cerr << "! \n";
-        if ((*first) < (*second)) {
+        if (*first < *second) {
             ans->next = first;
             first = first->next;
         } else {
@@ -46,48 +43,46 @@ Node *merge(Node *first, Node *second) {
         }
         ans = ans->next;
     }
-    //std::cerr << "after while\n";
     while (first != nullptr) {
-        //std::cerr << "! ";
         ans->next = first;
         first = first->next;
         ans = ans->next;
     }
-    //std::cerr << "\n";
     while (second != nullptr) {
-        //std::cerr << "! ";
         ans->next = second;
         second = second->next;
         ans = ans->next;
     }
     ans->next = nullptr;
-    //std::cerr << "\nend\n";
     return start;
 }
 
 Node *merge_sort(Node *begin) {
-    //std::cerr << "begin merge\n";
     if (begin == nullptr || begin->next == nullptr) {
         return begin;
     }
     Node *center = begin;
     Node *end = begin->next;
-    while (end != nullptr) {
+    while (end != nullptr && end->next != nullptr) {
         end = end->next;
-        if (end != nullptr) {
-            end = end->next;
-            center = center->next;
-        }
+        end = end->next;
+        center = center->next;
     }
     Node *second = center->next;
     center->next = nullptr;
-    //std::cerr << "middle merge\n";
 
     begin = merge_sort(begin);
     second = merge_sort(second);
     begin = merge(begin, second);
-    //std::cerr << "end merge\n";
     return begin;
+}
+
+void clear(Node *current) {
+    if (current == nullptr) {
+        return;
+    }
+    clear(current->next);
+    delete current;
 }
 
 int main() {
@@ -102,7 +97,10 @@ int main() {
     }
     Node *ans = merge_sort(start);
     for (auto elem = ans; elem != nullptr; elem = elem->next) {
-        std::cout << (elem->data) << " ";
+        std::cout << elem->data << " ";
     }
+    clear(ans);
+    std::cout << "\n";
+
     return 0;
 }
