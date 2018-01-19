@@ -8,14 +8,10 @@ struct Node {
 
     Node() : data(0), next(nullptr) {}
 
-    Node(const int &d_) : data(d_), next(nullptr) {}
+    Node(int d_) : data(d_), next(nullptr) {}
 
-    bool operator<(const Node other) const {
+    bool operator<(const Node &other) const {
         return data < other.data;
-    }
-
-    bool operator<(const Node *other) const {
-        return data < other->data;
     }
 };
 
@@ -78,17 +74,17 @@ Node *merge_sort(Node *begin) {
 }
 
 void clear(Node *current) {
-    if (current == nullptr) {
-        return;
+    while (current != nullptr) {
+        auto next = current->next;
+        delete current;
+        current = next;
     }
-    clear(current->next);
-    delete current;
 }
 
 int main() {
     int n, x;
     std::cin >> n >> x;
-    auto *data = new Node(x);
+    auto data = new Node(x);
     auto start = data;
     for (int i = 1; i < n; ++i) {
         std::cin >> x;
